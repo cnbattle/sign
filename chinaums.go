@@ -1,6 +1,7 @@
 package sign
 
 import (
+	"errors"
 	"github.com/cnbattle/sign/helper"
 	"sort"
 	"strings"
@@ -34,17 +35,26 @@ func (c *Chinaums) Sign(md5Key string, params map[string]string) (string, error)
 
 func (c *Chinaums) buildSignString(params map[string]string) (string, error) {
 	if len(params) == 0 {
-		return "", nil
+		return "", errors.New("params为空")
+	}
+
+	_, ok := params["sign"]
+	if ok {
+		delete(params, "sign")
 	}
 
 	var keys []string
-	for key, _ := range params {
+	for key := range params {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
 	var str string
 	for i, key := range keys {
 		value := params[key]
+		if len(value) == 0 {
+			continue
+		}
+
 		if i == len(keys)-1 {
 			str += key + "=" + value
 		} else {

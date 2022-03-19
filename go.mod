@@ -1,3 +1,3 @@
 module github.com/cnbattle/sign
 
-go 1.17
+go 1.18
