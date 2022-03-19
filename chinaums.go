@@ -25,7 +25,7 @@ func (c *Chinaums) CheckSign(signKey string, params map[string]string) (bool, er
 // Sign 签名
 func (c *Chinaums) Sign(signKey string, params map[string]string) (string, error) {
 	//生成待签字串 和  sign
-	signString, err := c.buildSignString(params)
+	signString, err := c.BuildSignString(params)
 	if err != nil {
 		return "", err
 	}
@@ -33,7 +33,7 @@ func (c *Chinaums) Sign(signKey string, params map[string]string) (string, error
 	return strings.ToUpper(helper.Sha256(newSignString)), nil
 }
 
-func (c *Chinaums) buildSignString(params map[string]string) (string, error) {
+func (c *Chinaums) BuildSignString(params map[string]string) (string, error) {
 	if len(params) == 0 {
 		return "", errors.New("params为空")
 	}
