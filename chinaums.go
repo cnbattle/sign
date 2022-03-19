@@ -3,6 +3,7 @@ package sign
 import (
 	"errors"
 	"github.com/cnbattle/sign/helper"
+	"net/url"
 	"sort"
 	"strings"
 )
@@ -25,7 +26,7 @@ func (c *Chinaums) CheckSign(signKey string, params map[string]string) (bool, er
 // Sign 签名
 func (c *Chinaums) Sign(signKey string, params map[string]string) (string, error) {
 	//生成待签字串 和  sign
-	signString, err := c.BuildSignString(params)
+	signString, err := c.BuildSignString(params, false)
 	if err != nil {
 		return "", err
 	}
@@ -33,7 +34,8 @@ func (c *Chinaums) Sign(signKey string, params map[string]string) (string, error
 	return strings.ToUpper(helper.Sha256(newSignString)), nil
 }
 
-func (c *Chinaums) BuildSignString(params map[string]string) (string, error) {
+// BuildSignString 生成 sign str
+func (c *Chinaums) BuildSignString(params map[string]string, isEscape bool) (string, error) {
 	if len(params) == 0 {
 		return "", errors.New("params为空")
 	}
@@ -51,6 +53,10 @@ func (c *Chinaums) BuildSignString(params map[string]string) (string, error) {
 	var str string
 	for i, key := range keys {
 		value := params[key]
+		if isEscape {
+			value = url.QueryEscape(value)
+		}
+
 		if len(value) == 0 {
 			continue
 		}
